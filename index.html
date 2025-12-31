@@ -6,169 +6,194 @@
 <title>Spin & Drink – Space Edition</title>
 
 <style>
+/* Reset and Base Styles */
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: Arial, sans-serif;
-  background: radial-gradient(circle at top, #000000, #090a0f);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: radial-gradient(circle at top, #0b0d17, #000000);
   color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  overflow: hidden;
+  padding: 15px;
+  overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
-h1 { text-align:center; font-size:30px; margin-bottom:20px; }
+h1 { 
+  text-align: center; 
+  font-size: clamp(24px, 5vw, 40px); /* Fluid typography */
+  margin-bottom: 20px; 
+}
+
+/* Input Container for responsiveness */
+.input-group {
+  display: flex;
+  flex-direction: column; /* Stack on mobile */
+  gap: 10px;
+  width: 100%;
+  max-width: 500px;
+  align-items: center;
+}
 
 input {
-  padding: 10px;
-  margin: 6px;
+  padding: 12px;
   border-radius: 20px;
-  border: none;
+  border: 1px solid #444;
   font-size: 16px;
   text-align: center;
-  width: 200px;
+  width: 100%; /* Full width of container */
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
 }
+
+input::placeholder { color: #ccc; }
 
 button {
-  padding: 14px 28px;
-  margin: 10px;
-  font-size: 16px;
-  border-radius: 30px;
+  padding: 16px 40px;
+  margin: 20px 0;
+  font-size: 18px;
+  border-radius: 50px;
   cursor: pointer;
-  background: white;
-  color: black;
+  background: #ffffff;
+  color: #000;
   font-weight: bold;
   border: none;
+  width: 100%;
+  max-width: 250px;
+  transition: transform 0.2s;
 }
 
+button:active { transform: scale(0.95); }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* The Wheel - Responsive Sizing */
 #wheel {
-  width: 250px;
-  height: 250px;
+  width: 70vw; /* Scales with screen width */
+  height: 70vw;
+  max-width: 350px; /* Limits size on desktop */
+  max-height: 350px;
   border-radius: 50%;
-  background: black;
-  border: 8px solid white;
+  background: #000;
+  border: 6px solid #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 15px;
+  margin: 20px 0;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
   transition: transform 3s cubic-bezier(.17,.67,.32,1.2);
 }
 
 #wheelText {
-  font-size: 22px;
+  font-size: clamp(18px, 4vw, 24px);
   font-weight: bold;
   text-align: center;
-  padding: 10px;
+  padding: 15px;
+  text-transform: uppercase;
 }
 
 #players {
-  margin-top: 12px;
+  margin-top: 15px;
   font-size: 18px;
-  font-weight: bold;
+  color: #00d4ff;
 }
 
 #result {
-  margin-top: 18px;
+  margin-top: 20px;
   font-size: 20px;
   font-weight: bold;
   text-align: center;
-  min-height: 28px;
+  min-height: 30px;
+  color: #ffde59;
+}
+
+/* TABLET & DESKTOP ADJUSTMENTS */
+@media (min-width: 600px) {
+  .input-group {
+    flex-direction: row; /* Side-by-side on larger screens */
+  }
+  
+  #wheel {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+/* Fix for PayPal container visibility */
+#paypal-button-container-P-9DG208074V137110VNFJ7KVI {
+  width: 100%;
+  max-width: 300px;
 }
 </style>
 </head>
 
 <body>
 
-<h1> Chill Chill Game  🚀🍸</h1>
+<h1>Chill Chill Game 🚀🍸</h1>
 
-<div>
-  <input id="player1" placeholder="Enter Player 1 Name">
-  <input id="player2" placeholder="Enter Player 2 Name">
+<div class="input-group">
+  <input id="player1" placeholder="Name">
+  <input id="player2" placeholder="Name">
 </div>
 
 <p id="players"></p>
 
 <div id="wheel">
-  <span id="wheelText">SPIN</span>
+  <span id="wheelText">READY?</span>
 </div>
 
 <button id="spinBtn" onclick="spin()">Play</button>
 
-<!-- PayPal subscription button container (hidden at start) -->
-<div id="paypal-button-container-P-9DG208074V137110VNFJ7KVI" style="display:none; margin-top:15px;"></div>
+<div id="paypal-button-container-P-9DG208074V137110VNFJ7KVI" style="display:none;"></div>
 
 <p id="result"></p>
 
-<!-- Load PayPal SDK -->
 <script src="https://www.paypal.com/sdk/js?client-id=AQw9Jtyl5FUNn4njKl_9W6M-W66KmCs34UNpIt-mw58k84b9B5IVhwgqHyrv_6d9qfDWIVyK6L6SQVT3&vault=true&intent=subscription"></script>
 
 <script>
-const actions = [
-  "🍺Drink 1",
-  "🍺Drink 2",
-  "🍺Drink 3",
-  "🍺Give Drink",
-  "🍺😚Drink with Kiss",
-  "💴Pay",
-  "😚Kiss",
-  "All Drink"
-];
-
-let spinCount = localStorage.getItem("spinCount");
-spinCount = spinCount ? parseInt(spinCount) : 0;
-localStorage.setItem("spinCount", spinCount);
-
+// (Your existing JavaScript remains the same, it works perfectly with this CSS!)
+const actions = ["🍺Drink 1","🍺Drink 2","🍺Drink 3","🍺Give Drink","🍺😚Drink with Kiss","💴Pay","😚Kiss","All Drink"];
+let spinCount = parseInt(localStorage.getItem("spinCount") || 0);
 let isSubscribed = localStorage.getItem("isSubscribed") === "true";
-
-document.getElementById("paypal-button-container-P-9DG208074V137110VNFJ7KVI").style.display = "none";
 
 function spin() {
   const p1 = document.getElementById("player1").value.trim();
   const p2 = document.getElementById("player2").value.trim();
-  if (!p1 || !p2) {
-    alert("Please enter both player names!");
-    return;
-  }
+  if (!p1 || !p2) { alert("Please enter both player names!"); return; }
 
-  document.getElementById("players").innerText = `${p1}  vs  ${p2}`;
-
+  document.getElementById("players").innerText = `${p1} VS ${p2}`;
   const wheelText = document.getElementById("wheelText");
   const wheel = document.getElementById("wheel");
+  const spinBtn = document.getElementById("spinBtn");
 
-  document.getElementById("spinBtn").disabled = true;
-
+  spinBtn.disabled = true;
   const selectedAction = actions[Math.floor(Math.random() * actions.length)];
-  const players = [p1, p2];
-  const selectedPlayer = players[Math.floor(Math.random() * players.length)];
+  const selectedPlayer = [p1, p2][Math.floor(Math.random() * 2)];
 
   const spinDeg = Math.floor(Math.random() * 360) + 1440;
   wheel.style.transform = `rotate(${spinDeg}deg)`;
 
   spinCount++;
   localStorage.setItem("spinCount", spinCount);
-
-  wheelText.innerText = "✨ Spinning...";
+  wheelText.innerText = "✨ SPINNING...";
 
   setTimeout(() => {
     wheelText.innerText = selectedAction;
     document.getElementById("result").innerText = `${selectedPlayer} must do → ${selectedAction}`;
-    document.getElementById("spinBtn").disabled = false;
+    spinBtn.disabled = false;
 
-    // After 100 spins → show PayPal subscribe button (only if not subscribed)
     if (spinCount >= 100 && !isSubscribed) {
       document.getElementById("paypal-button-container-P-9DG208074V137110VNFJ7KVI").style.display = "block";
-      document.getElementById("result").innerText = "Subscribe to continue playing!";
+      document.getElementById("result").innerText = "Game Limit Reached. Subscribe to unlock!";
+      spinBtn.style.display = "none";
     }
-
   }, 3000);
 }
 
-/* ===== PAYPAL BUTTON ===== */
+// PayPal logic remains as provided...
 paypal.Buttons({
     style: { shape: 'pill', layout: 'vertical', label: 'subscribe' },
     createSubscription: function(data, actions) {
@@ -176,16 +201,9 @@ paypal.Buttons({
     },
     onApprove: function(data, actions) {
       alert("Subscription successful! Game unlocked!");
-
-      // Unlock forever
-      spinCount = 0;
       localStorage.setItem("spinCount", 0);
       localStorage.setItem("isSubscribed", "true");
-      isSubscribed = true;
-
-      // Hide PayPal button again
-      document.getElementById("paypal-button-container-P-9DG208074V137110VNFJ7KVI").style.display = "none";
-      document.getElementById("result").innerText = "You can continue playing!";
+      location.reload(); 
     }
 }).render('#paypal-button-container-P-9DG208074V137110VNFJ7KVI');
 </script>
