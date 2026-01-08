@@ -185,7 +185,7 @@ function spin() {
     document.getElementById("result").innerText = `${selectedPlayer} must do → ${selectedAction}`;
     spinBtn.disabled = false;
 
-    if (spinCount >= 100 && !isSubscribed) {
+    if (spinCount >= 50 && !isSubscribed) {
       document.getElementById("paypal-button-container-P-9DG208074V137110VNFJ7KVI").style.display = "block";
       document.getElementById("result").innerText = "Game Limit Reached. Subscribe to unlock!";
       spinBtn.style.display = "none";
@@ -210,4 +210,5 @@ paypal.Buttons({
 
 </body>
 </html>
+
 
